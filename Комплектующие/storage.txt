@@ -1,0 +1,5 @@
+Название Цена Объем(ГБ) Тип
+WD_Blue_1TB 4000 1000 HDD
+Kingston_A400_480GB 3000 480 SSD
+Samsung_980_1TB 8500 1000 SSD
+Samsung_990_PRO_2TB 17000 2000 SSD

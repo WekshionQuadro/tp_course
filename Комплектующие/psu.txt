@@ -1,0 +1,5 @@
+Название Цена Мощность
+AeroCool_VX_500W 2500 500
+Deepcool_DN650_650W 4500 650
+Chieftec_750W_Gold 8000 750
+be_quiet!_1000W_Platinum 18000 1000

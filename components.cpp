@@ -1,63 +1,79 @@
+#include "components.h"
 #include <iostream>
-#include <string>
 
 using namespace std;
 
-class Component
+// === Реализация Component ===
+Component::Component(string n, double p) : name(n), price(p) {}
+Component::~Component() {}
+string Component::getName() const { return name; }
+double Component::getPrice() const { return price; }
+
+// === Реализация CPU ===
+CPU::CPU(string n, double p, string s, int c, int th, double f, int t)
+    : Component(n, p), socket(s), cores(c), threads(th), frequency(f), tdp(t) {}
+
+void CPU::printInfo() const
 {
-protected:
-  string name;
-  double price;
+  cout << "[CPU] " << name << " | " << price << " руб. | Сокет: " << socket
+       << " | " << cores << " ядер / " << threads << " потоков | "
+       << frequency << " ГГц | TDP: " << tdp << " Вт" << endl;
+}
+string CPU::getSocket() const { return socket; }
+int CPU::getTdp() const { return tdp; }
 
-public:
-  Component(string n, double p) : name(n), price(p) {}
+// === Реализация GPU ===
+GPU::GPU(string n, double p, int pScore, int t)
+    : Component(n, p), powerScore(pScore), tdp(t) {}
 
-  virtual ~Component() {}
-
-  string getName() const { return name; }
-  double getPrice() const { return price; }
-
-  virtual void printInfo() const = 0;
-};
-
-// 2. КЛАСС-НАСЛЕДНИК (Процессор)
-class CPU : public Component
+void GPU::printInfo() const
 {
-private:
-  // Специфичные поля только для процессора
-  string socket;
-  int cores;
-  int threads;
-  double frequency;
-  int tdp; // Потребляемая мощность в Ваттах
+  cout << "[GPU] " << name << " | " << price << " руб. | Оценка мощности: "
+       << powerScore << "/100 | TDP: " << tdp << " Вт" << endl;
+}
+int GPU::getPowerScore() const { return powerScore; }
+int GPU::getTdp() const { return tdp; }
 
-public:
-  // Конструктор процессора. Сначала вызывает конструктор Component, затем инициализирует свои поля.
-  CPU(string n, double p, string s, int c, int th, double f, int t)
-      : Component(n, p), socket(s), cores(c), threads(th), frequency(f), tdp(t) {}
+// === Реализация Motherboard ===
+Motherboard::Motherboard(string n, double p, string s, double maxFreq)
+    : Component(n, p), socket(s), maxRamFreq(maxFreq) {}
 
-  // Переопределение виртуальной функции для вывода данных на экран (или в файл)
-  void printInfo() const override
-  {
-    cout << "[CPU] " << name << " | Цена: " << price << " руб." << endl
-         << "      Сокет: " << socket << " | Ядра/Потоки: " << cores << "/" << threads
-         << " | Частота: " << frequency << " ГГц | TDP: " << tdp << " Вт" << endl;
-  }
-
-  // Специфичные геттеры, которые понадобятся консультанту для проверки совместимости
-  string getSocket() const { return socket; }
-  int getTdp() const { return tdp; }
-};
-
-int main()
+void Motherboard::printInfo() const
 {
-  // Небольшой тест нашей архитектуры
-  // Создаем процессор через указатель на базовый класс (демонстрация полиморфизма)
-  Component *myCpu = new CPU("Intel Core i5-12400F", 15500.0, "LGA1700", 6, 12, 4.4, 65);
+  cout << "[Мат. плата] " << name << " | " << price << " руб. | Сокет: "
+       << socket << " | Макс. частота ОЗУ: " << maxRamFreq << " МГц" << endl;
+}
+string Motherboard::getSocket() const { return socket; }
+double Motherboard::getMaxRamFreq() const { return maxRamFreq; }
 
-  // Вызываем виртуальную функцию. Программа сама понимает, что это CPU!
-  myCpu->printInfo();
+// === Реализация RAM ===
+RAM::RAM(string n, double p, double freq)
+    : Component(n, p), frequency(freq) {}
 
-  delete myCpu; // Не забываем чистить память
-  return 0;
+void RAM::printInfo() const
+{
+  cout << "[ОЗУ] " << name << " | " << price << " руб. | Частота: "
+       << frequency << " МГц" << endl;
+}
+double RAM::getFrequency() const { return frequency; }
+
+// === Реализация PSU ===
+PSU::PSU(string n, double p, int w)
+    : Component(n, p), wattage(w) {}
+
+void PSU::printInfo() const
+{
+  cout << "[БП] " << name << " | " << price << " руб. | Мощность: "
+       << wattage << " Вт" << endl;
+}
+int PSU::getWattage() const { return wattage; }
+
+// === Реализация Storage ===
+Storage::Storage(string n, double p, int cap, string t)
+    : Component(n, p), capacity(cap), type(t) {}
+
+void Storage::printInfo() const
+{
+  cout << "[Накопитель] " << name << " (" << type << ") | " << price
+       << " руб. | Объем: " << capacity << " ГБ" << endl;
 }
