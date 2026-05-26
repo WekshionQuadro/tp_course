@@ -5,9 +5,8 @@
 class Store
 {
 private:
-  Catalog catalog; // Наша витрина с массивами деталей
+  Catalog catalog;
 
-  // Скрытые методы для загрузки каждого конкретного файла
   void loadCPUs(const std::string &filepath);
   void loadGPUs(const std::string &filepath);
   void loadMotherboards(const std::string &filepath);
@@ -19,9 +18,7 @@ public:
   Store();
   ~Store();
 
-  // Главный метод загрузки всех данных
   void loadAllData();
 
-  // Метод запуска мероприятия (ввод пользователя, выбор консультанта, итог)
   void startSimulation();
 };

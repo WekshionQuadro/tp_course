@@ -3,76 +3,69 @@
 
 using namespace std;
 
-// === Реализация Component ===
 Component::Component(string n, double p) : name(n), price(p) {}
 Component::~Component() {}
-string Component::getName() const { return name; }
-double Component::getPrice() const { return price; }
+string Component::getName() { return name; }
+double Component::getPrice() { return price; }
 
-// === Реализация CPU ===
 CPU::CPU(string n, double p, string s, int c, int th, double f, int t)
     : Component(n, p), socket(s), cores(c), threads(th), frequency(f), tdp(t) {}
 
-void CPU::printInfo() const
+void CPU::printInfo()
 {
   cout << "[CPU] " << name << " | " << price << " руб. | Сокет: " << socket
        << " | " << cores << " ядер / " << threads << " потоков | "
        << frequency << " ГГц | TDP: " << tdp << " Вт" << endl;
 }
-string CPU::getSocket() const { return socket; }
-int CPU::getTdp() const { return tdp; }
+string CPU::getSocket() { return socket; }
+int CPU::getTdp() { return tdp; }
 
-// === Реализация GPU ===
 GPU::GPU(string n, double p, int pScore, int t)
     : Component(n, p), powerScore(pScore), tdp(t) {}
 
-void GPU::printInfo() const
+void GPU::printInfo()
 {
   cout << "[GPU] " << name << " | " << price << " руб. | Оценка мощности: "
        << powerScore << "/100 | TDP: " << tdp << " Вт" << endl;
 }
-int GPU::getPowerScore() const { return powerScore; }
-int GPU::getTdp() const { return tdp; }
+int GPU::getPowerScore() { return powerScore; }
+int GPU::getTdp() { return tdp; }
 
-// === Реализация Motherboard ===
 Motherboard::Motherboard(string n, double p, string s, double maxFreq)
     : Component(n, p), socket(s), maxRamFreq(maxFreq) {}
 
-void Motherboard::printInfo() const
+void Motherboard::printInfo()
 {
   cout << "[Мат. плата] " << name << " | " << price << " руб. | Сокет: "
        << socket << " | Макс. частота ОЗУ: " << maxRamFreq << " МГц" << endl;
 }
-string Motherboard::getSocket() const { return socket; }
-double Motherboard::getMaxRamFreq() const { return maxRamFreq; }
+string Motherboard::getSocket() { return socket; }
+double Motherboard::getMaxRamFreq() { return maxRamFreq; }
 
-// === Реализация RAM ===
 RAM::RAM(string n, double p, double freq)
     : Component(n, p), frequency(freq) {}
 
-void RAM::printInfo() const
+void RAM::printInfo()
 {
   cout << "[ОЗУ] " << name << " | " << price << " руб. | Частота: "
        << frequency << " МГц" << endl;
 }
-double RAM::getFrequency() const { return frequency; }
+double RAM::getFrequency() { return frequency; }
 
-// === Реализация PSU ===
 PSU::PSU(string n, double p, int w)
     : Component(n, p), wattage(w) {}
 
-void PSU::printInfo() const
+void PSU::printInfo()
 {
   cout << "[БП] " << name << " | " << price << " руб. | Мощность: "
        << wattage << " Вт" << endl;
 }
-int PSU::getWattage() const { return wattage; }
+int PSU::getWattage() { return wattage; }
 
-// === Реализация Storage ===
 Storage::Storage(string n, double p, int cap, string t)
     : Component(n, p), capacity(cap), type(t) {}
 
-void Storage::printInfo() const
+void Storage::printInfo()
 {
   cout << "[Накопитель] " << name << " (" << type << ") | " << price
        << " руб. | Объем: " << capacity << " ГБ" << endl;

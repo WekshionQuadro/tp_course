@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 
-// === БАЗОВЫЙ КЛАСС ===
 class Component
 {
 protected:
@@ -12,13 +11,12 @@ public:
   Component(std::string n, double p);
   virtual ~Component();
 
-  std::string getName() const;
-  double getPrice() const;
+  std::string getName();
+  double getPrice();
 
-  virtual void printInfo() const = 0;
+  virtual void printInfo();
 };
 
-// === ПРОЦЕССОР (CPU) ===
 class CPU : public Component
 {
 private:
@@ -30,43 +28,40 @@ private:
 
 public:
   CPU(std::string n, double p, std::string s, int c, int th, double f, int t);
-  void printInfo() const override;
+  void printInfo() override;
 
-  std::string getSocket() const;
-  int getTdp() const;
+  std::string getSocket();
+  int getTdp();
 };
 
-// === ВИДЕОКАРТА (GPU) ===
 class GPU : public Component
 {
 private:
-  int powerScore; // Мощность от 0 до 100
-  int tdp;        // Потребляемая мощность
+  int powerScore;
+  int tdp;
 
 public:
   GPU(std::string n, double p, int pScore, int t);
-  void printInfo() const override;
+  void printInfo() override;
 
-  int getPowerScore() const;
-  int getTdp() const;
+  int getPowerScore();
+  int getTdp();
 };
 
-// === МАТЕРИНСКАЯ ПЛАТА (Motherboard) ===
 class Motherboard : public Component
 {
 private:
   std::string socket;
-  double maxRamFreq; // Максимально поддерживаемая частота RAM
+  double maxRamFreq;
 
 public:
   Motherboard(std::string n, double p, std::string s, double maxFreq);
-  void printInfo() const override;
+  void printInfo() override;
 
-  std::string getSocket() const;
-  double getMaxRamFreq() const;
+  std::string getSocket();
+  double getMaxRamFreq();
 };
 
-// === ОПЕРАТИВНАЯ ПАМЯТЬ (RAM) ===
 class RAM : public Component
 {
 private:
@@ -74,32 +69,30 @@ private:
 
 public:
   RAM(std::string n, double p, double freq);
-  void printInfo() const override;
+  void printInfo() override;
 
-  double getFrequency() const;
+  double getFrequency();
 };
 
-// === БЛОК ПИТАНИЯ (PSU) ===
 class PSU : public Component
 {
 private:
-  int wattage; // Мощность в ваттах
+  int wattage;
 
 public:
   PSU(std::string n, double p, int w);
-  void printInfo() const override;
+  void printInfo() override;
 
-  int getWattage() const;
+  int getWattage();
 };
 
-// === НАКОПИТЕЛЬ (Storage) ===
 class Storage : public Component
 {
 private:
-  int capacity;     // Объем памяти в ГБ
-  std::string type; // SSD или HDD
+  int capacity;
+  std::string type;
 
 public:
   Storage(std::string n, double p, int cap, std::string t);
-  void printInfo() const override;
+  void printInfo() override;
 };

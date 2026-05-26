@@ -11,8 +11,6 @@ Store::~Store()
   // Здесь позже напишем очистку памяти (удаление объектов из каталога)
 }
 
-// === МЕТОДЫ ЗАГРУЗКИ ДАННЫХ ИЗ ФАЙЛОВ ===
-
 void Store::loadCPUs(const string &filepath)
 {
   ifstream file(filepath);
@@ -23,13 +21,12 @@ void Store::loadCPUs(const string &filepath)
   }
 
   string header;
-  getline(file, header); // ПРОПУСКАЕМ ПЕРВУЮ СТРОКУ С ОПИСАНИЕМ
+  getline(file, header);
 
   string name, socket;
   double price, freq;
   int cores, threads, tdp;
 
-  // Читаем данные. Цикл сам остановится, когда файл закончится.
   while (file >> name >> price >> socket >> cores >> threads >> freq >> tdp)
   {
     catalog.cpus.push_back(new CPU(name, price, socket, cores, threads, freq, tdp));
@@ -44,7 +41,7 @@ void Store::loadGPUs(const string &filepath)
     return;
 
   string header;
-  getline(file, header); // Пропускаем заголовок
+  getline(file, header);
 
   string name;
   double price;
@@ -148,11 +145,6 @@ void Store::loadAllData()
   cout << "Данные из папки 'Комплектующие' успешно загружены!" << endl;
 }
 
-// Добавь эти библиотеки в начало store.cpp, если их там еще нет:
-// #include <cstdlib>
-// #include <ctime>
-
-// === ЗАПУСК СИМУЛЯЦИИ (Проведение мероприятия) ===
 void Store::startSimulation()
 {
   double budget;
@@ -169,7 +161,6 @@ void Store::startSimulation()
   cout << "Ваш выбор (1-3): ";
   cin >> purpose;
 
-  // Генератор случайных консультантов (0, 1 или 2)
   Consultant *consultant = nullptr;
   int randNum = rand() % 3;
   if (randNum == 0)
@@ -189,7 +180,6 @@ void Store::startSimulation()
        << " (Уровень: " << consultant->getLevelName() << ")" << endl;
   cout << "Идет подбор комплектующих..." << endl;
 
-  // Запуск сборки (работает полиморфизм)
   vector<Component *> receipt = consultant->buildPC(budget, purpose, catalog);
 
   // Подсчет ВЫЧИСЛЯЕМЫХ ПОКАЗАТЕЛЕЙ
