@@ -182,7 +182,6 @@ void Store::startSimulation()
 
   vector<Component *> receipt = consultant->buildPC(budget, purpose, catalog);
 
-  // Подсчет ВЫЧИСЛЯЕМЫХ ПОКАЗАТЕЛЕЙ
   double totalCost = 0;
   for (Component *comp : receipt)
   {
@@ -190,7 +189,6 @@ void Store::startSimulation()
   }
   double remainingBudget = budget - totalCost;
 
-  // Вывод чека на экран
   cout << "\n=== ВАШ ЧЕК ===" << endl;
   for (Component *comp : receipt)
   {
@@ -200,7 +198,6 @@ void Store::startSimulation()
   cout << "Итоговая стоимость: " << totalCost << " руб." << endl;
   cout << "Остаток бюджета: " << remainingBudget << " руб." << endl;
 
-  // ЗАПИСЬ РЕЗУЛЬТАТОВ В ФАЙЛ
   ofstream outFile("result.txt");
   if (outFile.is_open())
   {
@@ -215,8 +212,6 @@ void Store::startSimulation()
     outFile << "Итоговая стоимость: " << totalCost << " руб.\n";
     outFile << "Остаток бюджета: " << remainingBudget << " руб.\n";
 
-    // Здесь можно добавить "Индекс сбалансированности" на будущее
-
     outFile.close();
     cout << "\nЧек успешно сохранен в файл result.txt!" << endl;
   }
@@ -225,6 +220,5 @@ void Store::startSimulation()
     cout << "\nОшибка при сохранении чека в файл." << endl;
   }
 
-  // Очистка памяти
   delete consultant;
 }

@@ -42,11 +42,40 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
 {
   vector<Component *> receipt;
 
-  double targetCpuBudget = budget * 0.30;
-  double targetGpuBudget = budget * 0.30;
-  double targetRamBudget = budget * 0.20;
-  double targetStorageBudget = budget * 0.10;
-  double targetPsuBudget = budget * 0.10;
+  double targetCpuBudget = 0, targetGpuBudget = 0, targetRamBudget = 0, targetStorageBudget = 0, targetPsuBudget = 0;
+
+  // ВЫБИРАЕМ ВЕСА В ЗАВИСИМОСТИ ОТ НАЗНАЧЕНИЯ ПК (purpose)
+  if (purpose == 1)
+  {
+    // Игровой ПК: Упор на видеокарту
+    targetCpuBudget = budget * 0.25;
+    targetGpuBudget = budget * 0.45;
+    targetRamBudget = budget * 0.10;
+    targetStorageBudget = budget * 0.10;
+    targetPsuBudget = budget * 0.10;
+  }
+  else if (purpose == 2)
+  {
+    // Рабочий ПК: Упор на процессор и оперативную память
+    targetCpuBudget = budget * 0.30;
+    targetGpuBudget = budget * 0.30;
+    targetRamBudget = budget * 0.20;
+    targetStorageBudget = budget * 0.10;
+    targetPsuBudget = budget * 0.10;
+  }
+  else
+  {
+    // Офисный ПК (purpose == 3): Вводим жесткий лимит бюджета
+    if (budget > 70000)
+    {
+      budget = 70000; // Офисный ПК не должен быть дороже 70к
+    }
+    targetCpuBudget = budget * 0.40;
+    targetGpuBudget = 0; // Для офиса видеокарта не нужна, хватит "встройки"
+    targetRamBudget = budget * 0.20;
+    targetStorageBudget = budget * 0.20;
+    targetPsuBudget = budget * 0.20;
+  }
 
   CPU *selectedCpu = nullptr;
   for (CPU *cpu : catalog.cpus)
@@ -81,7 +110,6 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
   if (selectedGpu)
     receipt.push_back(selectedGpu);
 
-  // 3. Ищем материнскую плату (ОБЯЗАТЕЛЬНО СОВМЕСТИМУЮ ПО СОКЕТУ С ПРОЦЕССОРОМ)
   Motherboard *selectedMobo = nullptr;
   for (Motherboard *mobo : catalog.mobos)
   {
@@ -94,13 +122,11 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
   if (selectedMobo)
     receipt.push_back(selectedMobo);
 
-  // 4. Оперативная память (Проверка лимита частоты материнской платы)
   RAM *selectedRam = nullptr;
   for (RAM *ram : catalog.rams)
   {
     if (ram->getPrice() <= targetRamBudget)
     {
-      // Берем только если плата поддерживает такую частоту
       if (selectedMobo == nullptr || ram->getFrequency() <= selectedMobo->getMaxRamFreq())
       {
         if (selectedRam == nullptr || ram->getPrice() > selectedRam->getPrice())
@@ -115,7 +141,6 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
   if (selectedRam)
     receipt.push_back(selectedRam);
 
-  // 5. Накопитель
   Storage *selectedStorage = nullptr;
   for (Storage *st : catalog.storages)
   {
@@ -132,14 +157,13 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
   if (selectedStorage)
     receipt.push_back(selectedStorage);
 
-  // 6. Блок питания (Проверка суммы энергопотребления + запас 20%)
   PSU *selectedPsu = nullptr;
   int requiredTdp = 0;
   if (selectedCpu)
     requiredTdp += selectedCpu->getTdp();
   if (selectedGpu)
     requiredTdp += selectedGpu->getTdp();
-  requiredTdp = (int)(requiredTdp * 1.2); // Добавляем 20% запаса
+  requiredTdp = (int)(requiredTdp * 1.2);
 
   for (PSU *psu : catalog.psus)
   {
@@ -151,7 +175,6 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
       }
     }
   }
-  // Если по бюджету ничего не подошло, берем просто первый, который потянет сборку
   if (selectedPsu == nullptr)
   {
     for (PSU *psu : catalog.psus)
@@ -171,9 +194,6 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
   return receipt;
 }
 
-// === Реализация ОПЫТНОГО ===
-ExperiencedConsultant::ExperiencedConsultant(string n) : Consultant(n, "Опытный") {}
-
 vector<Component *> ExperiencedConsultant::buildPC(double budget, int purpose, Catalog &catalog)
 {
   vector<Component *> receipt;
@@ -181,13 +201,38 @@ vector<Component *> ExperiencedConsultant::buildPC(double budget, int purpose, C
   // Вносим случайное искажение в бюджет (от 0.8 до 1.2) - "Человеческий фактор"
   double mod = 1.0 + ((rand() % 41 - 20) / 100.0);
 
-  double targetCpuBudget = budget * 0.30 * mod;
-  double targetGpuBudget = budget * 0.30 * mod;
-  double targetRamBudget = budget * 0.20 * mod;
-  double targetStorageBudget = budget * 0.10 * mod;
-  double targetPsuBudget = budget * 0.10 * mod;
+  double targetCpuBudget = 0, targetGpuBudget = 0, targetRamBudget = 0, targetStorageBudget = 0, targetPsuBudget = 0;
 
-  // 1. Процессор
+  // ВЫБИРАЕМ ВЕСА В ЗАВИСИМОСТИ ОТ НАЗНАЧЕНИЯ И УМНОЖАЕМ НА МОДИФИКАТОР (mod)
+  if (purpose == 1)
+  { // Игровой
+    targetCpuBudget = budget * 0.25 * mod;
+    targetGpuBudget = budget * 0.45 * mod;
+    targetRamBudget = budget * 0.10 * mod;
+    targetStorageBudget = budget * 0.10 * mod;
+    targetPsuBudget = budget * 0.10 * mod;
+  }
+  else if (purpose == 2)
+  { // Рабочий
+    targetCpuBudget = budget * 0.30 * mod;
+    targetGpuBudget = budget * 0.30 * mod;
+    targetRamBudget = budget * 0.20 * mod;
+    targetStorageBudget = budget * 0.10 * mod;
+    targetPsuBudget = budget * 0.10 * mod;
+  }
+  else
+  { // Офисный
+    if (budget > 70000)
+      budget = 70000;
+    targetCpuBudget = budget * 0.40 * mod;
+    targetGpuBudget = 0; // Видеокарту опытный тоже брать не будет для ворда
+    targetRamBudget = budget * 0.20 * mod;
+    targetStorageBudget = budget * 0.20 * mod;
+    targetPsuBudget = budget * 0.20 * mod;
+  }
+
+  // 1. Процессор... (и дальше идет старый код)
+
   CPU *selectedCpu = nullptr;
   for (CPU *cpu : catalog.cpus)
   {
@@ -204,7 +249,6 @@ vector<Component *> ExperiencedConsultant::buildPC(double budget, int purpose, C
   if (selectedCpu)
     receipt.push_back(selectedCpu);
 
-  // 2. Видеокарта
   GPU *selectedGpu = nullptr;
   for (GPU *gpu : catalog.gpus)
   {
@@ -221,8 +265,6 @@ vector<Component *> ExperiencedConsultant::buildPC(double budget, int purpose, C
   if (selectedGpu)
     receipt.push_back(selectedGpu);
 
-  // 3. Выбираем материнскую плату (ОБЯЗАТЕЛЬНО СОВМЕСТИМУЮ ПО СОКЕТУ)
-  // Опытный консультант знает, что сокеты должны совпадать, здесь он не ошибается.
   Motherboard *selectedMobo = nullptr;
   for (Motherboard *mobo : catalog.mobos)
   {
@@ -235,7 +277,6 @@ vector<Component *> ExperiencedConsultant::buildPC(double budget, int purpose, C
   if (selectedMobo)
     receipt.push_back(selectedMobo);
 
-  // 4. ОЗУ
   RAM *selectedRam = nullptr;
   for (RAM *ram : catalog.rams)
   {
@@ -253,7 +294,6 @@ vector<Component *> ExperiencedConsultant::buildPC(double budget, int purpose, C
   if (selectedRam)
     receipt.push_back(selectedRam);
 
-  // 5. Накопитель
   Storage *selectedStorage = nullptr;
   for (Storage *st : catalog.storages)
   {
@@ -268,7 +308,6 @@ vector<Component *> ExperiencedConsultant::buildPC(double budget, int purpose, C
   if (selectedStorage)
     receipt.push_back(selectedStorage);
 
-  // 6. БП (Опытный берет БП впритык, без запаса в 20% как Эксперт)
   PSU *selectedPsu = nullptr;
   int requiredTdp = 0;
   if (selectedCpu)
