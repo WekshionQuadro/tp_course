@@ -1,6 +1,8 @@
 #include "store.h"
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -8,17 +10,17 @@ Store::Store() {}
 
 Store::~Store()
 {
-  // Здесь позже напишем очистку памяти (удаление объектов из каталога)
+  for (Consultant *c : consultants)
+  {
+    delete c;
+  }
 }
 
 void Store::loadCPUs(const string &filepath)
 {
   ifstream file(filepath);
   if (!file.is_open())
-  {
-    cout << "Ошибка: не удалось открыть " << filepath << endl;
     return;
-  }
 
   string header;
   getline(file, header);
@@ -132,6 +134,38 @@ void Store::loadStorages(const string &filepath)
   file.close();
 }
 
+void Store::loadConsultants(const string &filepath)
+{
+  ifstream file(filepath);
+  if (!file.is_open())
+  {
+    cout << "Ошибка: не удалось открыть " << filepath << endl;
+    return;
+  }
+
+  string header;
+  getline(file, header); // Пропускаем заголовок
+
+  string name, level;
+  while (file >> name >> level)
+  {
+    // В зависимости от прочитанного уровня, создаем нужный объект-наследник!
+    if (level == "Стажер")
+    {
+      consultants.push_back(new InternConsultant(name));
+    }
+    else if (level == "Опытный")
+    {
+      consultants.push_back(new ExperiencedConsultant(name));
+    }
+    else if (level == "Эксперт")
+    {
+      consultants.push_back(new ExpertConsultant(name));
+    }
+  }
+  file.close();
+}
+
 // Главный метод, который вызывает все остальные
 void Store::loadAllData()
 {
@@ -141,12 +175,20 @@ void Store::loadAllData()
   loadRAMs("Комплектующие/ram.txt");
   loadPSUs("Комплектующие/psu.txt");
   loadStorages("Комплектующие/storage.txt");
+  loadConsultants("Комплектующие/consultants.txt");
 
   cout << "Данные из папки 'Комплектующие' успешно загружены!" << endl;
 }
 
+// === ЗАПУСК СИМУЛЯЦИИ (Проведение мероприятия) ===
 void Store::startSimulation()
 {
+  if (consultants.empty())
+  {
+    cout << "Ошибка: список консультантов пуст! Проверьте файл consultants.txt" << endl;
+    return;
+  }
+
   double budget;
   int purpose;
 
@@ -161,27 +203,18 @@ void Store::startSimulation()
   cout << "Ваш выбор (1-3): ";
   cin >> purpose;
 
-  Consultant *consultant = nullptr;
-  int randNum = rand() % 3;
-  if (randNum == 0)
-  {
-    consultant = new InternConsultant("Олег");
-  }
-  else if (randNum == 1)
-  {
-    consultant = new ExperiencedConsultant("Анна");
-  }
-  else
-  {
-    consultant = new ExpertConsultant("Виктор");
-  }
+  // Выбираем случайного консультанта из загруженного массива
+  int randIndex = rand() % consultants.size();
+  Consultant *consultant = consultants[randIndex];
 
   cout << "\nК вам подходит консультант " << consultant->getName()
        << " (Уровень: " << consultant->getLevelName() << ")" << endl;
   cout << "Идет подбор комплектующих..." << endl;
 
+  // Запуск сборки (работает полиморфизм)
   vector<Component *> receipt = consultant->buildPC(budget, purpose, catalog);
 
+  // Подсчет ВЫЧИСЛЯЕМЫХ ПОКАЗАТЕЛЕЙ
   double totalCost = 0;
   for (Component *comp : receipt)
   {
@@ -189,6 +222,7 @@ void Store::startSimulation()
   }
   double remainingBudget = budget - totalCost;
 
+  // Вывод чека на экран
   cout << "\n=== ВАШ ЧЕК ===" << endl;
   for (Component *comp : receipt)
   {
@@ -198,6 +232,7 @@ void Store::startSimulation()
   cout << "Итоговая стоимость: " << totalCost << " руб." << endl;
   cout << "Остаток бюджета: " << remainingBudget << " руб." << endl;
 
+  // ЗАПИСЬ РЕЗУЛЬТАТОВ В ФАЙЛ
   ofstream outFile("result.txt");
   if (outFile.is_open())
   {
@@ -219,6 +254,4 @@ void Store::startSimulation()
   {
     cout << "\nОшибка при сохранении чека в файл." << endl;
   }
-
-  delete consultant;
 }

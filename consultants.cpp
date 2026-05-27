@@ -44,8 +44,10 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
 
   double targetCpuBudget = 0, targetGpuBudget = 0, targetRamBudget = 0, targetStorageBudget = 0, targetPsuBudget = 0;
 
-  // ВЫБИРАЕМ ВЕСА В ЗАВИСИМОСТИ ОТ НАЗНАЧЕНИЯ ПК (purpose)
-  if (purpose == 1)
+  // Выбор весов для распределения бюджета на комплектующие в зависимости от назначения ПК
+  switch (purpose)
+  {
+  case 1:
   {
     // Игровой ПК: Упор на видеокарту
     targetCpuBudget = budget * 0.25;
@@ -54,7 +56,8 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
     targetStorageBudget = budget * 0.10;
     targetPsuBudget = budget * 0.10;
   }
-  else if (purpose == 2)
+  break;
+  case 2:
   {
     // Рабочий ПК: Упор на процессор и оперативную память
     targetCpuBudget = budget * 0.30;
@@ -63,9 +66,9 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
     targetStorageBudget = budget * 0.10;
     targetPsuBudget = budget * 0.10;
   }
-  else
+  break;
+  case 3:
   {
-    // Офисный ПК (purpose == 3): Вводим жесткий лимит бюджета
     if (budget > 70000)
     {
       budget = 70000; // Офисный ПК не должен быть дороже 70к
@@ -75,6 +78,11 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
     targetRamBudget = budget * 0.20;
     targetStorageBudget = budget * 0.20;
     targetPsuBudget = budget * 0.20;
+  }
+  break;
+
+  default:
+    break;
   }
 
   CPU *selectedCpu = nullptr;
@@ -90,7 +98,7 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
   }
   if (selectedCpu == nullptr && !catalog.cpus.empty())
     selectedCpu = catalog.cpus[0];
-  if (selectedCpu)
+  if (selectedCpu != nullptr)
     receipt.push_back(selectedCpu);
 
   GPU *selectedGpu = nullptr;
@@ -194,6 +202,8 @@ vector<Component *> ExpertConsultant::buildPC(double budget, int purpose, Catalo
   return receipt;
 }
 
+ExperiencedConsultant::ExperiencedConsultant(string n) : Consultant(n, "Опытный") {}
+
 vector<Component *> ExperiencedConsultant::buildPC(double budget, int purpose, Catalog &catalog)
 {
   vector<Component *> receipt;
@@ -203,35 +213,45 @@ vector<Component *> ExperiencedConsultant::buildPC(double budget, int purpose, C
 
   double targetCpuBudget = 0, targetGpuBudget = 0, targetRamBudget = 0, targetStorageBudget = 0, targetPsuBudget = 0;
 
-  // ВЫБИРАЕМ ВЕСА В ЗАВИСИМОСТИ ОТ НАЗНАЧЕНИЯ И УМНОЖАЕМ НА МОДИФИКАТОР (mod)
-  if (purpose == 1)
-  { // Игровой
+  // Выбор весов для распределения бюджета на комплектующие в зависимости от назначения ПК
+  // с учетом случайного искажения
+  switch (purpose)
+  {
+  case 1:
+  {
     targetCpuBudget = budget * 0.25 * mod;
     targetGpuBudget = budget * 0.45 * mod;
     targetRamBudget = budget * 0.10 * mod;
     targetStorageBudget = budget * 0.10 * mod;
     targetPsuBudget = budget * 0.10 * mod;
   }
-  else if (purpose == 2)
-  { // Рабочий
+  break;
+  case 2:
+  {
     targetCpuBudget = budget * 0.30 * mod;
     targetGpuBudget = budget * 0.30 * mod;
     targetRamBudget = budget * 0.20 * mod;
     targetStorageBudget = budget * 0.10 * mod;
     targetPsuBudget = budget * 0.10 * mod;
   }
-  else
-  { // Офисный
+  break;
+  case 3:
+  {
     if (budget > 70000)
+    {
       budget = 70000;
+    }
     targetCpuBudget = budget * 0.40 * mod;
-    targetGpuBudget = 0; // Видеокарту опытный тоже брать не будет для ворда
+    targetGpuBudget = 0;
     targetRamBudget = budget * 0.20 * mod;
     targetStorageBudget = budget * 0.20 * mod;
     targetPsuBudget = budget * 0.20 * mod;
   }
+  break;
 
-  // 1. Процессор... (и дальше идет старый код)
+  default:
+    break;
+  }
 
   CPU *selectedCpu = nullptr;
   for (CPU *cpu : catalog.cpus)

@@ -7,6 +7,7 @@ Component::Component(string n, double p) : name(n), price(p) {}
 Component::~Component() {}
 string Component::getName() { return name; }
 double Component::getPrice() { return price; }
+void Component::printInfo() {}
 
 CPU::CPU(string n, double p, string s, int c, int th, double f, int t)
     : Component(n, p), socket(s), cores(c), threads(th), frequency(f), tdp(t) {}
