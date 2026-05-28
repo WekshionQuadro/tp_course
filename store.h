@@ -16,6 +16,7 @@ private:
   void loadRAMs(const std::string &filepath);
   void loadPSUs(const std::string &filepath);
   void loadStorages(const std::string &filepath);
+  void loadCases(const std::string &filepath); // Добавлена загрузка корпусов
   void loadConsultants(const std::string &filepath);
 
 public:

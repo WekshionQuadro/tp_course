@@ -1,5 +1,11 @@
 Название Цена Мощность
-AeroCool_VX_500W 2500 500
-Deepcool_DN650_650W 4500 650
-Chieftec_750W_Gold 8000 750
-be_quiet!_1000W_Platinum 18000 1000
+AeroCool_VX_PLUS_400W 1600 400
+Deepcool_PF450_450W 3200 450
+Cougar_VTE500_500W 4200 500
+Zalman_MegaMax_600W 4800 600
+Chieftec_Core_700W 6500 700
+Deepcool_PK800D_800W 7800 800
+Montech_TITAN_GOLD_850W 11500 850
+Super_Flower_Leadex_1000W 16500 1000
+be_quiet!_Straight_Power_12_1200W 23000 1200
+Thermaltake_Toughpower_1650W 36000 1650

@@ -56,14 +56,16 @@ class Motherboard : public Component
 {
 private:
   std::string socket;     // Сокет процессора
+  std::string ddrType;    // Тип памяти (DDR4, DDR5)
   std::string formFactor; // Форм-фактор
   double maxRamFreq;      // Максимальная поддерживаемая частота оперативной памяти
 
 public:
-  Motherboard(std::string n, double p, std::string s, std::string f, double maxFreq);
+  Motherboard(std::string n, double p, std::string s, std::string ddr, std::string f, double maxFreq);
   void printInfo() override;
 
   std::string getSocket();
+  std::string getDdrType();
   std::string getFormFactor();
   double getMaxRamFreq();
 };
@@ -72,12 +74,14 @@ public:
 class RAM : public Component
 {
 private:
+  std::string type; // Тип памяти (DDR4, DDR5)
   double frequency; // Частота
 
 public:
-  RAM(std::string n, double p, double freq);
+  RAM(std::string n, double p, std::string t, double freq);
   void printInfo() override;
 
+  std::string getType();
   double getFrequency();
 };
 

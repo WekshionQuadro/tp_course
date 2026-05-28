@@ -14,6 +14,22 @@ Store::~Store()
   {
     delete c;
   }
+
+  // Устраняем утечку памяти, очищая каталоги комплектующих
+  for (CPU *comp : catalog.cpus)
+    delete comp;
+  for (GPU *comp : catalog.gpus)
+    delete comp;
+  for (Motherboard *comp : catalog.mobos)
+    delete comp;
+  for (RAM *comp : catalog.rams)
+    delete comp;
+  for (PSU *comp : catalog.psus)
+    delete comp;
+  for (Storage *comp : catalog.storages)
+    delete comp;
+  for (Case *comp : catalog.cases)
+    delete comp;
 }
 
 void Store::loadCPUs(const string &filepath)
@@ -65,12 +81,12 @@ void Store::loadMotherboards(const string &filepath)
   string header;
   getline(file, header);
 
-  string name, socket;
+  string name, socket, ddrType, formFactor;
   double price, maxFreq;
 
-  while (file >> name >> price >> socket >> maxFreq)
+  while (file >> name >> price >> socket >> ddrType >> maxFreq >> formFactor)
   {
-    catalog.mobos.push_back(new Motherboard(name, price, socket, maxFreq));
+    catalog.mobos.push_back(new Motherboard(name, price, socket, ddrType, formFactor, maxFreq));
   }
   file.close();
 }
@@ -84,12 +100,12 @@ void Store::loadRAMs(const string &filepath)
   string header;
   getline(file, header);
 
-  string name;
+  string name, type;
   double price, freq;
 
-  while (file >> name >> price >> freq)
+  while (file >> name >> price >> type >> freq)
   {
-    catalog.rams.push_back(new RAM(name, price, freq));
+    catalog.rams.push_back(new RAM(name, price, type, freq));
   }
   file.close();
 }
@@ -134,6 +150,25 @@ void Store::loadStorages(const string &filepath)
   file.close();
 }
 
+void Store::loadCases(const string &filepath)
+{
+  ifstream file(filepath);
+  if (!file.is_open())
+    return;
+
+  string header;
+  getline(file, header);
+
+  string name, sizeType, supportedForms;
+  double price;
+
+  while (file >> name >> price >> sizeType >> supportedForms)
+  {
+    catalog.cases.push_back(new Case(name, price, sizeType, supportedForms));
+  }
+  file.close();
+}
+
 void Store::loadConsultants(const string &filepath)
 {
   ifstream file(filepath);
@@ -144,12 +179,11 @@ void Store::loadConsultants(const string &filepath)
   }
 
   string header;
-  getline(file, header); // Пропускаем заголовок
+  getline(file, header);
 
   string name, level;
   while (file >> name >> level)
   {
-    // В зависимости от прочитанного уровня, создаем нужный объект-наследник!
     if (level == "Стажер")
     {
       consultants.push_back(new InternConsultant(name));
@@ -166,7 +200,6 @@ void Store::loadConsultants(const string &filepath)
   file.close();
 }
 
-// Главный метод, который вызывает все остальные
 void Store::loadAllData()
 {
   loadCPUs("Комплектующие/cpu.txt");
@@ -175,12 +208,12 @@ void Store::loadAllData()
   loadRAMs("Комплектующие/ram.txt");
   loadPSUs("Комплектующие/psu.txt");
   loadStorages("Комплектующие/storage.txt");
+  loadCases("Комплектующие/case.txt");
   loadConsultants("Комплектующие/consultants.txt");
 
   cout << "Данные из папки 'Комплектующие' успешно загружены!" << endl;
 }
 
-// === ЗАПУСК СИМУЛЯЦИИ (Проведение мероприятия) ===
 void Store::startSimulation()
 {
   if (consultants.empty())
@@ -203,7 +236,6 @@ void Store::startSimulation()
   cout << "Ваш выбор (1-3): ";
   cin >> purpose;
 
-  // Выбираем случайного консультанта из загруженного массива
   int randIndex = rand() % consultants.size();
   Consultant *consultant = consultants[randIndex];
 
@@ -211,10 +243,8 @@ void Store::startSimulation()
        << " (Уровень: " << consultant->getLevelName() << ")" << endl;
   cout << "Идет подбор комплектующих..." << endl;
 
-  // Запуск сборки (работает полиморфизм)
   vector<Component *> receipt = consultant->buildPC(budget, purpose, catalog);
 
-  // Подсчет ВЫЧИСЛЯЕМЫХ ПОКАЗАТЕЛЕЙ
   double totalCost = 0;
   for (Component *comp : receipt)
   {
@@ -222,17 +252,15 @@ void Store::startSimulation()
   }
   double remainingBudget = budget - totalCost;
 
-  // Вывод чека на экран
   cout << "\n=== ВАШ ЧЕК ===" << endl;
   for (Component *comp : receipt)
   {
-    comp->printInfo(); // Полиморфный вывод информации
+    comp->printInfo();
   }
   cout << "------------------------" << endl;
   cout << "Итоговая стоимость: " << totalCost << " руб." << endl;
   cout << "Остаток бюджета: " << remainingBudget << " руб." << endl;
 
-  // ЗАПИСЬ РЕЗУЛЬТАТОВ В ФАЙЛ
   ofstream outFile("result.txt");
   if (outFile.is_open())
   {

@@ -12,6 +12,7 @@ struct Catalog
   std::vector<RAM *> rams;          // Массив оперативной памяти
   std::vector<PSU *> psus;          // Массив блоков питания
   std::vector<Storage *> storages;  // Массив накопителей
+  std::vector<Case *> cases;        // Массив корпусов
 };
 
 // Базовый абстрактный класс для всех консультантов
@@ -21,6 +22,7 @@ protected:
   std::string name;      // Имя
   std::string levelName; // Название уровня квалификации
 
+  // Функции проверок на совместимость комплектующих
   bool checkMobo(CPU *cpu, Motherboard *mobo);
   bool checkRam(Motherboard *mobo, RAM *ram);
   bool checkPsu(int requiredTdp, PSU *psu);

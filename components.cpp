@@ -34,28 +34,30 @@ void GPU::printInfo()
 int GPU::getPowerScore() { return powerScore; }
 int GPU::getPowerDraw() { return powerDraw; }
 
-// Реализация класса Motherboard (материнская плата)
-Motherboard::Motherboard(string n, double p, string s, string f, double maxFreq)
-    : Component(n, p), socket(s), formFactor(f), maxRamFreq(maxFreq) {}
+// Реализация класса Motherboard
+Motherboard::Motherboard(string n, double p, string s, string ddr, string f, double maxFreq)
+    : Component(n, p), socket(s), ddrType(ddr), formFactor(f), maxRamFreq(maxFreq) {}
 
 void Motherboard::printInfo()
 {
   cout << "[Мат. плата] " << name << " | " << price << " руб. | Сокет: "
-       << socket << "| Форм-фактор: " << formFactor << " | Макс. частота ОЗУ: " << maxRamFreq << " МГц" << endl;
+       << socket << " | Память: " << ddrType << " | Форм-фактор: " << formFactor << " | Макс. ОЗУ: " << maxRamFreq << " МГц" << endl;
 }
 string Motherboard::getSocket() { return socket; }
+string Motherboard::getDdrType() { return ddrType; }
 string Motherboard::getFormFactor() { return formFactor; }
 double Motherboard::getMaxRamFreq() { return maxRamFreq; }
 
-// Реализация класса RAM (оперативная память)
-RAM::RAM(string n, double p, double freq)
-    : Component(n, p), frequency(freq) {}
+// Реализация класса RAM
+RAM::RAM(string n, double p, string t, double freq)
+    : Component(n, p), type(t), frequency(freq) {}
 
 void RAM::printInfo()
 {
-  cout << "[ОЗУ] " << name << " | " << price << " руб. | Частота: "
+  cout << "[ОЗУ] " << name << " | " << price << " руб. | Тип: " << type << " | Частота: "
        << frequency << " МГц" << endl;
 }
+string RAM::getType() { return type; }
 double RAM::getFrequency() { return frequency; }
 
 // Реализация класса PSU (блок питания)
