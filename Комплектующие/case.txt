@@ -1,0 +1,4 @@
+Название Цена Типоразмер Поддерживаемые_форматы
+Zalman_S2 3500 Mid-Tower ATX/Micro-ATX/Mini-ITX
+AeroCool_CS-107 2500 Mini-Tower Micro-ATX/Mini-ITX
+Fractal_Design_Meshify_2 12000 Full-Tower E-ATX/ATX/Micro-ATX/Mini-ITX
